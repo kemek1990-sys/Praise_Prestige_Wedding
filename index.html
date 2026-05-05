@@ -33,12 +33,6 @@
     header h1 {
       font-size: 2.8em;
       margin: 0;
-      letter-spacing: 2px;
-    }
-
-    header p {
-      margin: 8px 0;
-      font-size: 1.1em;
     }
 
     section {
@@ -51,21 +45,15 @@
 
     h2 {
       color: #ffd700;
-      margin-bottom: 10px;
     }
 
     .btn {
-      display: inline-block;
-      padding: 12px 20px;
+      padding: 10px 20px;
       background: #8b0000;
       color: white;
-      text-decoration: none;
+      border: none;
       border-radius: 5px;
-      margin-top: 10px;
-    }
-
-    .btn:hover {
-      background: #a52a2a;
+      cursor: pointer;
     }
 
     iframe {
@@ -79,56 +67,147 @@
       text-align: center;
       padding: 20px;
       background: rgba(0,0,0,0.7);
-      margin-top: 30px;
+    }
+
+    /* Fade Animation */
+    .fade {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Gallery */
+    .slider {
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    #countdown {
+      font-size: 2em;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .music-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #8b0000;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="overlay"></div>
+<div class="overlay"></div>
 
-  <header>
-    <h1>Praise & Prestige</h1>
-    <p>Traditional Wedding Ceremony</p>
-    <p>20th June, 2026</p>
-  </header>
+<!-- Music -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+<button class="music-btn" onclick="toggleMusic()">🎶 Music</button>
 
-  <section>
-    <h2>Welcome</h2>
-    <p>
-      You are warmly invited to celebrate the traditional wedding ceremony of Praise and Prestige.
-      We are honored to share this special day with you.
-    </p>
-  </section>
+<header class="fade">
+  <h1>Praise & Prestige</h1>
+  <p>Traditional Wedding Ceremony</p>
+  <p>20th June, 2026</p>
+</header>
 
-  <section>
-    <h2>Dress Code</h2>
-    <p>Traditional attire encouraged (Ankara, Kente, Aso Ebi)</p>
-  </section>
+<section class="fade">
+  <h2>Countdown</h2>
+  <div id="countdown"></div>
+</section>
 
-  <section>
-    <h2>Location</h2>
-    <p>[Venue Name]</p>
-    <p>[Full Address]</p>
+<section class="fade">
+  <h2>Welcome</h2>
+  <p>
+    You are warmly invited to celebrate the traditional wedding ceremony of Praise and Prestige.
+  </p>
+</section>
 
-    <a class="btn" href="https://maps.google.com" target="_blank">
-      View on Map
-    </a>
-  </section>
+<section class="fade">
+  <h2>Gallery</h2>
+  <div class="slider">
+    <img src="img1.jpg" class="slide active">
+    <img src="img2.jpg" class="slide">
+    <img src="img3.jpg" class="slide">
+  </div>
+</section>
 
-  <section>
-    <h2>RSVP</h2>
+<section class="fade">
+  <h2>Dress Code</h2>
+  <p>Traditional attire encouraged (Ankara, Kente, Aso Ebi)</p>
+</section>
 
-    <iframe 
-      src="https://docs.google.com/forms/d/e/1FAIpQLSd0isyQdXpHDOu-lpgJX8yvMzOcod3xgE0jbk3Zl7rewA7I4g/viewform?embedded=true">
-    </iframe>
+<section class="fade">
+  <h2>Location</h2>
+  <p>[Venue Name]</p>
+  <p>[Full Address]</p>
+</section>
 
-  </section>
+<section class="fade">
+  <h2>RSVP</h2>
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSd0isyQdXpHDOu-lpgJX8yvMzOcod3xgE0jbk3Zl7rewA7I4g/viewform?embedded=true"></iframe>
+</section>
 
-  <footer>
-    <p>We look forward to celebrating with you 🎉</p>
-  </footer>
+<footer>
+  <p>We look forward to celebrating with you 🎉</p>
+</footer>
+
+<script>
+  // Countdown
+  const weddingDate = new Date("June 20, 2026 10:00:00").getTime();
+  setInterval(() => {
+    const now = new Date().getTime();
+    const diff = weddingDate - now;
+
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+
+    document.getElementById("countdown").innerHTML =
+      d + " Days " + h + " Hours " + m + " Minutes";
+
+  }, 1000);
+
+  // Gallery
+  let slides = document.querySelectorAll(".slide");
+  let index = 0;
+  setInterval(() => {
+    slides[index].classList.remove("active");
+    index = (index + 1) % slides.length;
+    slides[index].classList.add("active");
+  }, 3000);
+
+  // Music
+  function toggleMusic() {
+    const music = document.getElementById("music");
+    music.paused ? music.play() : music.pause();
+  }
+</script>
 
 </body>
 </html>
